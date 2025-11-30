@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Dashboard - HMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-person-badge"></i> Welcome Dr. {{ doctor.fullname }}</h2>
+    <a href="{{ url_for('doctor.availability') }}" class="btn btn-primary">
+        <i class="bi bi-calendar-plus"></i> Provide Availability
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-calendar-event"></i> Upcoming Appointments</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Sr No.</th>
+                                <th>Patient Name</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Patient History</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in upcoming_appointments %}
+                            <tr>
+                                <td>{{ appointment.id }}</td>
+                                <td>{{ appointment.patient.fullname }}</td>
+                                <td>{{ appointment.appointment_date.strftime('%d/%m/%Y') }}</td>
+                                <td>{{ appointment.appointment_time }}</td>
+                                <td>
+                                    <a href="{{ url_for('doctor.view_patient_history', patient_id=appointment.patient_id) }}" class="btn btn-sm btn-info">
+                                        View
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('doctor.update_appointment', appointment_id=appointment.id) }}" class="btn btn-sm btn-warning">
+                                        Update
+                                    </a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">No upcoming appointments</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-people"></i> Assigned Patients</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for patient in assigned_patients %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ patient.fullname }}
+                        <a href="{{ url_for('doctor.view_patient_history', patient_id=patient.id) }}" class="btn btn-sm btn-info">
+                            View
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item text-center">No assigned patients</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

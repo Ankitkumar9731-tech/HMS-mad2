@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Update Appointment - HMS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-pencil-square"></i> Update Patient History</h2>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h5>Patient Name: {{ appointment.patient.fullname }}, Department: {{ appointment.doctor.specialization }}</h5>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <input type="hidden" name="action" id="action" value="complete">
+            
+            <div class="mb-3">
+                <label for="visit_type" class="form-label">Visit Type</label>
+                <select class="form-select" id="visit_type" name="visit_type" required>
+                    <option value="In-person" {% if treatment and treatment.visit_type == 'In-person' %}selected{% endif %}>In-person</option>
+                    <option value="Follow-up" {% if treatment and treatment.visit_type == 'Follow-up' %}selected{% endif %}>Follow-up</option>
+                    <option value="Consultation" {% if treatment and treatment.visit_type == 'Consultation' %}selected{% endif %}>Consultation</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="tests_done" class="form-label">Test Done</label>
+                <input type="text" class="form-control" id="tests_done" name="tests_done" value="{{ treatment.tests_done if treatment else '' }}" placeholder="e.g., ECG, Blood Test">
+            </div>
+            
+            <div class="mb-3">
+                <label for="diagnosis" class="form-label">Diagnosis</label>
+                <textarea class="form-control" id="diagnosis" name="diagnosis" rows="3" required>{{ treatment.diagnosis if treatment else '' }}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="prescription" class="form-label">Prescription</label>
+                <textarea class="form-control" id="prescription" name="prescription" rows="3">{{ treatment.prescription if treatment else '' }}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Medicines</label>
+                <div id="medicines-container">
+                    {% if treatment and treatment.medicines %}
+                        {% for medicine in treatment.medicines %}
+                        <div class="row mb-2 medicine-row">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" name="medicine_name[]" value="{{ medicine.medicine_name }}" placeholder="Medicine name">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" name="dosage[]" value="{{ medicine.dosage }}" placeholder="Dosage (e.g., 1-0-1)">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-danger btn-sm remove-medicine">Remove</button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="row mb-2 medicine-row">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" name="medicine_name[]" placeholder="Medicine name">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" name="dosage[]" placeholder="Dosage (e.g., 1-0-1)">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-danger btn-sm remove-medicine">Remove</button>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <button type="button" class="btn btn-sm btn-secondary mt-2" id="add-medicine">Add Medicine</button>
+            </div>
+            
+            <div class="mb-3">
+                <label for="notes" class="form-label">Notes</label>
+                <textarea class="form-control" id="notes" name="notes" rows="3">{{ treatment.notes if treatment else '' }}</textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-success" onclick="document.getElementById('action').value='complete'">
+                <i class="bi bi-check-circle"></i> Mark as Complete
+            </button>
+            <button type="submit" class="btn btn-danger" onclick="document.getElementById('action').value='cancel'">
+                <i class="bi bi-x-circle"></i> Cancel Appointment
+            </button>
+            <a href="{{ url_for('doctor.dashboard') }}" class="btn btn-secondary">Back</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('add-medicine').addEventListener('click', function() {
+        const container = document.getElementById('medicines-container');
+        const newRow = document.createElement('div');
+        newRow.className = 'row mb-2 medicine-row';
+        newRow.innerHTML = `
+            <div class="col-md-6">
+                <input type="text" class="form-control" name="medicine_name[]" placeholder="Medicine name">
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="dosage[]" placeholder="Dosage (e.g., 1-0-1)">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-danger btn-sm remove-medicine">Remove</button>
+            </div>
+        `;
+        container.appendChild(newRow);
+    });
+    
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-medicine')) {
+            e.target.closest('.medicine-row').remove();
+        }
+    });
+</script>
+{% endblock %}
+

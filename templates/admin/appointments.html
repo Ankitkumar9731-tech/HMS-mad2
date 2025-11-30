@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}All Appointments - HMS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-calendar-check"></i> All Appointments</h2>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Patient Name</th>
+                        <th>Doctor Name</th>
+                        <th>Department</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in appointments %}
+                    <tr>
+                        <td>{{ appointment.id }}</td>
+                        <td>{{ appointment.patient.fullname }}</td>
+                        <td>Dr. {{ appointment.doctor.fullname }}</td>
+                        <td>{{ appointment.doctor.specialization }}</td>
+                        <td>{{ appointment.appointment_date.strftime('%d/%m/%Y') }}</td>
+                        <td>{{ appointment.appointment_time }}</td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if appointment.status == 'Completed' else 'warning' if appointment.status == 'Booked' else 'danger' }}">
+                                {{ appointment.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin.view_patient_history', appointment_id=appointment.id) }}" class="btn btn-sm btn-info">
+                                View History
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center">No appointments found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

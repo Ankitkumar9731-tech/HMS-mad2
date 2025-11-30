@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile - HMS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-person-gear"></i> Edit Profile</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <div class="mb-3">
+                <label for="fullname" class="form-label">Fullname</label>
+                <input type="text" class="form-control" id="fullname" name="fullname" value="{{ patient.fullname }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ patient.email or '' }}">
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone</label>
+                <input type="text" class="form-control" id="phone" name="phone" value="{{ patient.phone or '' }}">
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <textarea class="form-control" id="address" name="address" rows="3">{{ patient.address or '' }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="date_of_birth" class="form-label">Date of Birth</label>
+                <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" value="{{ patient.date_of_birth.strftime('%Y-%m-%d') if patient.date_of_birth else '' }}">
+            </div>
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+            <a href="{{ url_for('patient.dashboard') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

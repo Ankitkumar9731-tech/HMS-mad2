@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - HMS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-speedometer2"></i> Welcome Admin</h2>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <h3>{{ total_doctors }}</h3>
+            <p class="mb-0">Total Doctors</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <h3>{{ total_patients }}</h3>
+            <p class="mb-0">Total Patients</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+            <h3>{{ total_appointments }}</h3>
+            <p class="mb-0">Total Appointments</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <a href="{{ url_for('admin.doctors') }}" class="btn btn-primary me-2 mb-2">
+                    <i class="bi bi-people"></i> Manage Doctors
+                </a>
+                <a href="{{ url_for('admin.patients') }}" class="btn btn-success me-2 mb-2">
+                    <i class="bi bi-person-heart"></i> Manage Patients
+                </a>
+                <a href="{{ url_for('admin.appointments') }}" class="btn btn-info me-2 mb-2">
+                    <i class="bi bi-calendar-check"></i> View Appointments
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Search</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('admin.doctors') }}">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="search" placeholder="Search doctor, patient, department...">
+                        <button class="btn btn-outline-primary" type="submit">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0"><i class="bi bi-calendar-event"></i> Upcoming Appointments</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Sr No.</th>
+                        <th>Patient Name</th>
+                        <th>Doctor Name</th>
+                        <th>Department</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Patient History</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in upcoming_appointments %}
+                    <tr>
+                        <td>{{ appointment.id }}</td>
+                        <td>{{ appointment.patient.fullname }}</td>
+                        <td>Dr. {{ appointment.doctor.fullname }}</td>
+                        <td>{{ appointment.doctor.specialization }}</td>
+                        <td>{{ appointment.appointment_date.strftime('%d/%m/%Y') }}</td>
+                        <td>{{ appointment.appointment_time }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.view_patient_history', appointment_id=appointment.id) }}" class="btn btn-sm btn-info">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center">No upcoming appointments</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

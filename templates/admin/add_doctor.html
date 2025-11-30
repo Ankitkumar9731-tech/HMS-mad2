@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Add Doctor - HMS{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-person-plus"></i> Add a new Doctor</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="mb-3">
+                <label for="fullname" class="form-label">Fullname</label>
+                <input type="text" class="form-control" id="fullname" name="fullname" required>
+            </div>
+            <div class="mb-3">
+                <label for="specialization" class="form-label">Specialization/Department</label>
+                <input type="text" class="form-control" id="specialization" name="specialization" list="departments" required>
+                <datalist id="departments">
+                    {% for dept in departments %}
+                    <option value="{{ dept.name }}">
+                    {% endfor %}
+                </datalist>
+            </div>
+            <div class="mb-3">
+                <label for="experience" class="form-label">Experience (years)</label>
+                <input type="number" class="form-control" id="experience" name="experience" min="0">
+            </div>
+            <div class="mb-3">
+                <label for="qualifications" class="form-label">Qualifications</label>
+                <input type="text" class="form-control" id="qualifications" name="qualifications" placeholder="e.g., MBBS, DM - Medical Oncology">
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+            <a href="{{ url_for('admin.doctors') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
